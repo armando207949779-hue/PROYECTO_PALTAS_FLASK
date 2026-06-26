@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solicitud Pedido Paltas</title>
+
+  <style>
+    :root {
+      --green-dark: #14532d;
+      --green: #166534;
+      --green-soft: #dcfce7;
+      --green-border: #bbf7d0;
+      --total-bg: #ecfdf5;
+      --total-border: #86efac;
+      --text: #111827;
+      --muted: #4b5563;
+      --line: #e5e7eb;
+      --bg: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Source Sans Pro", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 1.85rem 1rem 2rem;
+    }
+
+    .logo-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 0.85rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .logo-wrap img {
+      width: 112px;
+      max-width: 34vw;
+      border-radius: 18px;
+      display: block;
+    }
+
+    .main-title {
+      text-align: center;
+      color: var(--green-dark);
+      font-size: 1.75rem;
+      font-weight: 950;
+      line-height: 1.05;
+      margin: 0.15rem 0 0.2rem 0;
+    }
+
+    .step-pill {
+      text-align: center;
+      color: var(--green);
+      background: var(--green-soft);
+      border: 1px solid var(--green-border);
+      border-radius: 999px;
+      padding: 0.42rem 0.9rem;
+      font-weight: 900;
+      font-size: 0.88rem;
+      margin: 0.25rem auto 0.9rem auto;
+      width: fit-content;
+    }
+
+    .stepper {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.45rem;
+      margin: 0.8rem 0 1.1rem;
+    }
+
+    .stepper-item {
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 0.45rem 0.25rem;
+      text-align: center;
+      font-size: 0.76rem;
+      font-weight: 850;
+      color: var(--muted);
+      background: #ffffff;
+    }
+
+    .stepper-item.active {
+      color: var(--green-dark);
+      background: var(--green-soft);
+      border-color: var(--green-border);
+    }
+
+    .stepper-item.done {
+      color: #ffffff;
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .step-screen {
+      display: block;
+      animation: appear 0.12s ease-out;
+    }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(2px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      font-size: 1.45rem;
+      line-height: 1.2;
+      margin: 1rem 0 0.95rem;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+
+    .field-label,
+    .radio-title {
+      display: block;
+      margin: 0.75rem 0 0.35rem;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #111827;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="number"],
+    select {
+      width: 100%;
+      min-height: 3rem;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      padding: 0.72rem 0.85rem;
+      background: #ffffff;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 0.18rem rgba(22, 101, 52, 0.14);
+    }
+
+    .radio-horizontal {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 0.35rem 0 0.8rem;
+    }
+
+    .radio-vertical {
+      display: grid;
+      gap: 0.5rem;
+      margin: 0.35rem 0 0.8rem;
+    }
+
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: 0.42rem;
+      min-height: 2rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .radio-item input {
+      width: 1rem;
+      height: 1rem;
+      accent-color: var(--green);
+    }
+
+    .total-card {
+      background: var(--total-bg);
+      border: 1px solid var(--total-border);
+      border-radius: 18px;
+      padding: 1rem;
+      text-align: center;
+      margin: 0.8rem 0;
+    }
+
+    .total-label {
+      color: var(--green);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .total-value {
+      color: var(--green-dark);
+      font-size: 2.15rem;
+      font-weight: 950;
+      line-height: 1.05;
+      margin-top: 0.12rem;
+    }
+
+    .soft-note {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.3;
+      margin-top: 0.35rem;
+    }
+
+    .summary-card {
+      background: #f0fdf4;
+      border: 1px solid var(--green-border);
+      border-radius: 18px;
+      padding: 1rem;
+      margin: 0.8rem 0;
+      line-height: 1.45;
+    }
+
+    .clean-card {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 1rem;
+      margin: 0.8rem 0;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    }
+
+    .mini-title {
+      font-size: 0.9rem;
+      color: var(--green);
+      font-weight: 900;
+      margin-bottom: 0.35rem;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      border-bottom: 1px solid #eef2f7;
+      padding: 0.45rem 0;
+      font-size: 0.96rem;
+    }
+
+    .summary-row:last-child { border-bottom: 0; }
+
+    .summary-key {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .summary-value {
+      color: var(--text);
+      text-align: right;
+      font-weight: 800;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .button-row.single {
+      grid-template-columns: 1fr;
+    }
+
+    button,
+    .button {
+      width: 100%;
+      min-height: 3rem;
+      border-radius: 14px;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      color: var(--text);
+      font-weight: 850;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: grid;
+      place-items: center;
+      padding: 0.65rem 0.8rem;
+      text-align: center;
+      font-family: inherit;
+    }
+
+    button.primary,
+    .button.primary {
+      background: var(--green);
+      color: #ffffff;
+      border-color: var(--green);
+    }
+
+    .whatsapp-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: #16a34a;
+      color: white !important;
+      padding: 0.9rem 1rem;
+      border-radius: 14px;
+      font-weight: 900;
+      text-decoration: none !important;
+      margin: 0.8rem 0;
+    }
+
+    .notice {
+      border-radius: 16px;
+      padding: 0.85rem;
+      margin: 0.8rem 0;
+      font-weight: 800;
+    }
+
+    .success { background: #dcfce7; color: #14532d; border: 1px solid #86efac; }
+    .warning { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+    .error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+    .hidden { display: none; }
+
+    .checkbox-row {
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+      margin: 0.9rem 0 0.2rem;
+      font-weight: 800;
+    }
+
+    .checkbox-row input {
+      width: 1rem;
+      height: 1rem;
+      accent-color: var(--green);
+      margin-top: 0.2rem;
+    }
+
+    .version-debug {
+      text-align: center;
+      color: #9ca3af;
+      font-size: 0.72rem;
+      margin-top: 1.5rem;
+    }
+
+    @media (max-width: 440px) {
+      .button-row { grid-template-columns: 1fr; }
+      .stepper { gap: 0.3rem; }
+      .stepper-item { font-size: 0.68rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <div class="logo-wrap">
+      <img src="{{ url_for('static', filename='LOGO-PALTA.png') }}" alt="Logo paltas" onerror="this.style.display='none'">
+    </div>
+
+    <div class="main-title">Solicitud Pedido<br>Paltas</div>
+
+    {% set nombres = {1: "Pedido", 2: "Entrega", 3: "Contacto", 4: "Confirmación"} %}
+    <div class="step-pill">Paso {{ paso }} de 4 · {{ nombres[paso] }}</div>
+
+    <div class="stepper">
+      {% for n in [1, 2, 3, 4] %}
+        <div class="stepper-item {% if n == paso %}active{% elif n < paso %}done{% endif %}">
+          {{ n }}. {{ nombres[n] }}
+        </div>
+      {% endfor %}
+    </div>
+
+    {% for error in errores %}
+      <div class="notice error">{{ error }}</div>
+    {% endfor %}
+
+    {% if resultado %}
+      <section class="step-screen">
+        <div class="notice success">Pedido registrado.</div>
+
+        {% if resultado.google_ok %}
+          <div class="notice success">Guardado en Google Sheets.</div>
+        {% else %}
+          <div class="notice warning">
+            El pedido quedó como respaldo local. Google Sheets requiere revisión.<br>
+            <small>{{ resultado.google_msg }}</small>
+          </div>
+        {% endif %}
+
+        <a class="whatsapp-btn" href="{{ resultado.whatsapp_url }}" target="_blank">Enviar pedido por WhatsApp</a>
+
+        <form method="post" action="{{ url_for('nuevo') }}">
+          <button class="primary" type="submit">Nuevo pedido</button>
+        </form>
+      </section>
+
+    {% elif paso == 1 %}
+      <section class="step-screen">
+        <form method="post" action="{{ url_for('paso_1') }}">
+          <h2>¿Cuántos kilos quieres?</h2>
+
+          <div class="radio-title">Tipo de palta</div>
+          <div class="radio-horizontal">
+            {% for tipo, precio in precios.items() %}
+              <label class="radio-item">
+                <input type="radio" name="tipo_palta" value="{{ tipo }}" data-precio="{{ precio }}" {% if datos.tipo_palta == tipo %}checked{% endif %}>
+                <span>{{ tipo }}</span>
+              </label>
+            {% endfor %}
+          </div>
+
+          <label class="field-label" for="kilos">Kilos</label>
+          <input id="kilos" name="kilos" type="number" min="1" step="0.5" value="{{ datos.kilos }}">
+
+          <div class="total-card">
+            <div class="total-label" id="precioKgLabel">{{ datos.tipo_palta }} · {{ formato_pesos(datos.precio_kg) }} por kg</div>
+            <div class="total-value" id="totalVisual">{{ formato_pesos(datos.total_paltas) }}</div>
+            <div class="soft-note">Este es el valor total de las paltas por la cantidad seleccionada.</div>
+          </div>
+
+          <div class="button-row single">
+            <button class="primary" type="submit">Continuar</button>
+          </div>
+        </form>
+      </section>
+
+    {% elif paso == 2 %}
+      <section class="step-screen">
+        <form method="post" action="{{ url_for('paso_2') }}">
+          <h2>Entrega</h2>
+
+          <div class="radio-title">Selecciona una opción</div>
+          <div class="radio-vertical">
+            {% for opcion in ["Retiro sin costo", "Despacho zona cercana", "Cotizar otra comuna o región"] %}
+              <label class="radio-item">
+                <input type="radio" name="modalidad_entrega" value="{{ opcion }}" {% if datos.modalidad_entrega == opcion %}checked{% endif %}>
+                <span>{{ opcion }}</span>
+              </label>
+            {% endfor %}
+          </div>
+
+          <div id="bloqueRetiro">
+            <label class="field-label" for="comuna_retiro">Localidad de retiro</label>
+            <select id="comuna_retiro" name="comuna_retiro">
+              {% for comuna in localidades %}
+                <option value="{{ comuna }}" {% if datos.comuna == comuna %}selected{% endif %}>{{ comuna }}</option>
+              {% endfor %}
+            </select>
+
+            <div class="clean-card">
+              <div class="mini-title">Retiro</div>
+              Sin costo de despacho. El punto exacto se confirma por WhatsApp.
+            </div>
+          </div>
+
+          <div id="bloqueLocal" class="hidden">
+            <label class="field-label" for="comuna_local">Comuna</label>
+            <select id="comuna_local" name="comuna_local">
+              {% for comuna in localidades %}
+                <option value="{{ comuna }}" {% if datos.comuna == comuna %}selected{% endif %}>{{ comuna }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div id="bloqueOtra" class="hidden">
+            <label class="field-label" for="region">Región</label>
+            <select id="region" name="region">
+              {% for region in regiones_comunas.keys() %}
+                <option value="{{ region }}" {% if datos.region == region %}selected{% endif %}>{{ region }}</option>
+              {% endfor %}
+            </select>
+
+            <label class="field-label" for="comuna_otra">Comuna</label>
+            <select id="comuna_otra" name="comuna_otra"></select>
+          </div>
+
+          <div id="bloqueDireccion" class="hidden">
+            <div class="clean-card">
+              <div class="mini-title">Dirección de entrega</div>
+              Completa los datos principales para coordinar rápido.
+            </div>
+
+            <label class="field-label" for="poblacion">Población / sector</label>
+            <input id="poblacion" name="poblacion" value="{{ datos.poblacion }}" placeholder="Ej: Artificio, Boco, Pocochay">
+
+            <label class="field-label" for="calle">Calle</label>
+            <input id="calle" name="calle" value="{{ datos.calle }}" placeholder="Ej: Los Aromos">
+
+            <label class="field-label" for="numero">Número</label>
+            <input id="numero" name="numero" value="{{ datos.numero }}" placeholder="Ej: 123">
+          </div>
+
+          <div class="button-row">
+            <button type="submit" formaction="{{ url_for('volver', paso=1) }}">Volver</button>
+            <button class="primary" type="submit">Continuar</button>
+          </div>
+        </form>
+      </section>
+
+    {% elif paso == 3 %}
+      <section class="step-screen">
+        <form method="post" action="{{ url_for('paso_3') }}">
+          <h2>Datos de contacto</h2>
+
+          <label class="field-label" for="nombre">Nombre</label>
+          <input id="nombre" name="nombre" value="{{ datos.nombre }}" placeholder="Tu nombre">
+
+          <label class="field-label" for="whatsapp">WhatsApp</label>
+          <input id="whatsapp" name="whatsapp" value="{{ datos.whatsapp }}" placeholder="+56 9 1234 5678">
+
+          <div class="summary-card">
+            <b>Resumen rápido</b><br>
+            {{ datos.kilos }} kg de palta {{ datos.tipo_palta }}<br>
+            Total paltas: <b>{{ formato_pesos(datos.total_paltas) }}</b><br>
+            Modalidad: {{ datos.modalidad_entrega }}
+          </div>
+
+          <div class="button-row">
+            <button type="submit" formaction="{{ url_for('volver', paso=2) }}">Volver</button>
+            <button class="primary" type="submit">Ver transferencia</button>
+          </div>
+        </form>
+      </section>
+
+    {% elif paso == 4 %}
+      <section class="step-screen">
+        <h2>Revisa tu pedido</h2>
+
+        <div class="total-card">
+          <div class="total-label">Total paltas</div>
+          <div class="total-value">{{ formato_pesos(datos.total_paltas) }}</div>
+          <div class="soft-note">El despacho, si corresponde, se coordina aparte.</div>
+        </div>
+
+        {% if datos.modalidad_entrega == "Retiro sin costo" %}
+          {% set direccion = "Retiro en " ~ datos.comuna %}
+        {% else %}
+          {% set direccion = [datos.poblacion, datos.calle, datos.numero] | select | join(", ") %}
+        {% endif %}
+
+        <div class="clean-card">
+          <div class="mini-title">Resumen</div>
+          <div class="summary-row"><span class="summary-key">Pedido</span><span class="summary-value">{{ datos.kilos }} kg · {{ datos.tipo_palta }}</span></div>
+          <div class="summary-row"><span class="summary-key">Precio kg</span><span class="summary-value">{{ formato_pesos(datos.precio_kg) }}</span></div>
+          <div class="summary-row"><span class="summary-key">Entrega</span><span class="summary-value">{{ datos.modalidad_entrega }}</span></div>
+          <div class="summary-row"><span class="summary-key">Comuna</span><span class="summary-value">{{ datos.comuna }}</span></div>
+          <div class="summary-row"><span class="summary-key">Dirección</span><span class="summary-value">{{ direccion or "Por coordinar" }}</span></div>
+          <div class="summary-row"><span class="summary-key">Cliente</span><span class="summary-value">{{ datos.nombre }}</span></div>
+          <div class="summary-row"><span class="summary-key">WhatsApp</span><span class="summary-value">{{ datos.whatsapp }}</span></div>
+        </div>
+
+        <div class="clean-card">
+          <div class="mini-title">Transferencia</div>
+          <div class="summary-row"><span class="summary-key">Titular</span><span class="summary-value">{{ titular }}</span></div>
+          <div class="summary-row"><span class="summary-key">RUT</span><span class="summary-value">{{ rut }}</span></div>
+          <div class="summary-row"><span class="summary-key">Banco</span><span class="summary-value">{{ banco }}</span></div>
+          <div class="summary-row"><span class="summary-key">Cuenta</span><span class="summary-value">{{ tipo_cuenta }}</span></div>
+          <div class="summary-row"><span class="summary-key">Monto</span><span class="summary-value">{{ formato_pesos(datos.total_paltas) }}</span></div>
+        </div>
+
+        <form method="post" action="{{ url_for('registrar') }}">
+          <label class="checkbox-row">
+            <input type="checkbox" name="confirmar" value="si">
+            <span>Confirmo que los datos están correctos.</span>
+          </label>
+
+          <div class="button-row">
+            <button type="submit" formaction="{{ url_for('volver', paso=3) }}">Volver</button>
+            <button class="primary" type="submit">Registrar pedido</button>
+          </div>
+        </form>
+      </section>
+    {% endif %}
+
+    <div class="version-debug">V5 · pasos reales</div>
+  </main>
+
+  <script>
+    const regionesComunas = {{ regiones_comunas | tojson }};
+    const pesos = (valor) => "$" + Math.round(Number(valor || 0)).toLocaleString("es-CL");
+
+    const kilosInput = document.querySelector("#kilos");
+    const totalVisual = document.querySelector("#totalVisual");
+    const precioKgLabel = document.querySelector("#precioKgLabel");
+    const tipoRadios = document.querySelectorAll("input[name='tipo_palta']");
+
+    function actualizarTotal() {
+      if (!kilosInput || !totalVisual) return;
+
+      const seleccionado = document.querySelector("input[name='tipo_palta']:checked");
+      const tipo = seleccionado?.value || "Hass";
+      const precio = Number(seleccionado?.dataset.precio || 0);
+      const kilos = Number(kilosInput.value || 0);
+      const total = precio * kilos;
+
+      totalVisual.textContent = pesos(total);
+      if (precioKgLabel) {
+        precioKgLabel.textContent = `${tipo} · ${pesos(precio)} por kg`;
+      }
+    }
+
+    tipoRadios.forEach(r => r.addEventListener("change", actualizarTotal));
+    kilosInput?.addEventListener("input", actualizarTotal);
+    actualizarTotal();
+
+    const bloqueRetiro = document.querySelector("#bloqueRetiro");
+    const bloqueLocal = document.querySelector("#bloqueLocal");
+    const bloqueOtra = document.querySelector("#bloqueOtra");
+    const bloqueDireccion = document.querySelector("#bloqueDireccion");
+    const regionSelect = document.querySelector("#region");
+    const comunaOtra = document.querySelector("#comuna_otra");
+
+    function modalidadActual() {
+      return document.querySelector("input[name='modalidad_entrega']:checked")?.value || "Retiro sin costo";
+    }
+
+    function actualizarModalidad() {
+      const modalidad = modalidadActual();
+
+      bloqueRetiro?.classList.toggle("hidden", modalidad !== "Retiro sin costo");
+      bloqueLocal?.classList.toggle("hidden", modalidad !== "Despacho zona cercana");
+      bloqueOtra?.classList.toggle("hidden", modalidad !== "Cotizar otra comuna o región");
+      bloqueDireccion?.classList.toggle("hidden", modalidad === "Retiro sin costo");
+    }
+
+    function cargarComunas() {
+      if (!regionSelect || !comunaOtra) return;
+
+      const region = regionSelect.value;
+      const comunas = regionesComunas[region] || [];
+      const comunaActual = "{{ datos.comuna }}";
+
+      comunaOtra.innerHTML = "";
+      comunas.forEach((comuna) => {
+        const option = document.createElement("option");
+        option.value = comuna;
+        option.textContent = comuna;
+        if (comuna === comunaActual) option.selected = true;
+        comunaOtra.appendChild(option);
+      });
+    }
+
+    document.querySelectorAll("input[name='modalidad_entrega']").forEach((radio) => {
+      radio.addEventListener("change", actualizarModalidad);
+    });
+
+    regionSelect?.addEventListener("change", cargarComunas);
+
+    cargarComunas();
+    actualizarModalidad();
+  </script>
+</body>
+</html>
