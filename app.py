@@ -1,3 +1,9 @@
+# ============================================================
+# 01_APP_SOLPED_PALTAS
+# Solicitud Pedido Paltas
+# Versión Flask Mobile Premium
+# ============================================================
+
 import csv
 import json
 import os
@@ -845,7 +851,7 @@ INDEX_TEMPLATE = r"""
       {% endif %}
     </section>
 
-    <div class="footer-version">{{ app_version or "V6 Mobile Premium" }}</div>
+    <div class="footer-version">{{ app_version or "01_APP_SOLPED_PALTAS · V6 Mobile Premium" }}</div>
   </main>
 
   <script>
@@ -1218,7 +1224,7 @@ def index():
         rut=RUT,
         banco=BANCO,
         tipo_cuenta=TIPO_CUENTA,
-        app_version="V6 Mobile Premium",
+        app_version="01_APP_SOLPED_PALTAS · V6 Mobile Premium",
         resultado=session.pop("resultado", None),
         errores=session.pop("errores", []),
     )
