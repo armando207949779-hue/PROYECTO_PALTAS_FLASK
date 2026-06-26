@@ -1,7 +1,7 @@
 # ============================================================
 # 01_APP_SOLPED_PALTAS
 # Solicitud Pedido Paltas
-# Versión Flask Mobile Premium
+# Versión Flask Mobile Premium — Rediseño V7
 # ============================================================
 
 import csv
@@ -26,212 +26,230 @@ INDEX_TEMPLATE = r"""
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#14532d">
-  <title>Solicitud Pedido Paltas</title>
+  <meta name="theme-color" content="#2d1a0a">
+  <title>Pedido de Paltas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --green-950: #052e16;
-      --green-900: #14532d;
-      --green-800: #166534;
-      --green-700: #15803d;
-      --green-600: #16a34a;
-      --green-100: #dcfce7;
-      --green-50: #f0fdf4;
-      --lime-100: #ecfccb;
-      --text: #111827;
-      --muted: #4b5563;
-      --line: #e5e7eb;
-      --white: #ffffff;
-      --shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
-      --soft-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
-      --radius-xl: 28px;
-      --radius-lg: 22px;
+      --tierra:   #2d1a0a;
+      --palta:    #3d5a1e;
+      --palta-md: #4e7227;
+      --palta-lt: #6b9c35;
+      --crema:    #f5f0e8;
+      --crema-md: #ece4d0;
+      --crema-dk: #d9ccb0;
+      --pulpa:    #c8b560;
+      --pulpa-lt: #f0e8a0;
+      --white:    #fffef8;
+      --ink:      #1a1108;
+      --muted:    #6b5f4a;
+      --line:     #e0d8c4;
+
+      --r-card:   20px;
+      --r-btn:    14px;
+      --r-input:  12px;
+      --shadow-card: 0 2px 12px rgba(45,26,10,0.10), 0 1px 3px rgba(45,26,10,0.06);
+      --shadow-btn:  0 4px 16px rgba(61,90,30,0.22);
+
+      --ff-display: 'Syne', sans-serif;
+      --ff-body:    'DM Sans', sans-serif;
     }
 
-    * {
+    *, *::before, *::after {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
     }
 
     body {
       margin: 0;
-      color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(187, 247, 208, 0.75), transparent 34rem),
-        linear-gradient(180deg, #f8fff9 0%, #ffffff 45%, #f8fafc 100%);
+      font-family: var(--ff-body);
+      font-size: 15px;
+      color: var(--ink);
+      background-color: var(--crema);
+      background-image:
+        radial-gradient(ellipse 80% 40% at 50% -10%, rgba(107,156,53,0.18) 0%, transparent 70%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a09060' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
       min-height: 100dvh;
     }
 
-    button,
-    input,
-    select {
-      font: inherit;
-    }
+    button, input, select { font: inherit; }
 
-    .app-shell {
+    /* ── Layout ── */
+    .shell {
       width: 100%;
-      max-width: 560px;
+      max-width: 520px;
       margin: 0 auto;
-      padding: max(14px, env(safe-area-inset-top)) 14px calc(24px + env(safe-area-inset-bottom));
+      padding: max(0px, env(safe-area-inset-top)) 16px calc(32px + env(safe-area-inset-bottom));
     }
 
-    .hero {
+    /* ── Header ── */
+    .topbar {
       position: sticky;
       top: 0;
-      z-index: 20;
-      background: linear-gradient(180deg, rgba(248, 255, 249, 0.98) 0%, rgba(248, 255, 249, 0.88) 72%, rgba(248, 255, 249, 0) 100%);
-      backdrop-filter: blur(10px);
-      padding: 10px 0 8px;
+      z-index: 30;
+      padding: 12px 0 8px;
+      background: linear-gradient(to bottom, var(--crema) 70%, transparent);
     }
 
-    .brand-card {
-      background: rgba(255, 255, 255, 0.88);
-      border: 1px solid rgba(187, 247, 208, 0.95);
-      border-radius: 30px;
-      padding: 14px 14px 12px;
-      box-shadow: var(--soft-shadow);
-    }
-
-    .brand-row {
+    .header-inner {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 13px;
+      padding: 12px 14px;
+      background: var(--white);
+      border: 1px solid var(--crema-dk);
+      border-radius: var(--r-card);
+      box-shadow: var(--shadow-card);
     }
 
-    .logo-box {
-      width: 72px;
-      height: 72px;
+    .logo-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--crema-md), var(--pulpa-lt));
+      border: 1px solid var(--crema-dk);
       display: grid;
       place-items: center;
-      border-radius: 24px;
-      background: linear-gradient(135deg, #dcfce7, #fef9c3);
-      border: 1px solid rgba(22, 101, 52, 0.14);
-      overflow: hidden;
       flex: 0 0 auto;
+      overflow: hidden;
     }
 
-    .logo-box img {
-      width: 66px;
-      height: 66px;
+    .logo-wrap img {
+      width: 46px;
+      height: 46px;
       object-fit: contain;
-      display: block;
     }
+
+    .header-text { flex: 1; min-width: 0; }
 
     .eyebrow {
-      color: var(--green-800);
-      font-size: 0.78rem;
-      font-weight: 900;
-      letter-spacing: 0.04em;
+      font-family: var(--ff-body);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      margin-bottom: 2px;
+      color: var(--palta-md);
+      margin-bottom: 1px;
     }
 
-    .main-title {
-      color: var(--green-950);
-      font-size: clamp(1.45rem, 7vw, 2.15rem);
-      font-weight: 950;
-      letter-spacing: -0.06em;
-      line-height: 0.98;
+    .app-title {
+      font-family: var(--ff-display);
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--tierra);
       margin: 0;
+      letter-spacing: -0.02em;
     }
 
-    .step-pill {
-      width: fit-content;
-      margin-top: 9px;
-      color: var(--green-900);
-      background: var(--green-100);
-      border: 1px solid #bbf7d0;
-      border-radius: 999px;
-      padding: 7px 11px;
-      font-weight: 950;
-      font-size: 0.83rem;
-    }
-
-    .progress-wrap {
-      margin-top: 12px;
+    /* ── Progress ── */
+    .progress-section {
+      margin-top: 8px;
     }
 
     .progress-track {
-      height: 9px;
+      height: 4px;
+      background: var(--crema-dk);
       border-radius: 999px;
       overflow: hidden;
-      background: #e5e7eb;
+      margin-bottom: 8px;
     }
 
     .progress-fill {
       height: 100%;
       border-radius: 999px;
-      background: linear-gradient(90deg, var(--green-700), #84cc16);
+      background: linear-gradient(90deg, var(--palta), var(--palta-lt));
+      transition: width 0.4s cubic-bezier(.4,0,.2,1);
     }
 
     .stepper {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      margin-top: 9px;
+      gap: 5px;
     }
 
-    .stepper-item {
-      border-radius: 999px;
-      padding: 7px 4px;
-      text-align: center;
-      font-size: 0.68rem;
-      font-weight: 950;
-      color: #64748b;
-      background: #ffffff;
-      border: 1px solid var(--line);
+    .step-dot {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 5px 7px;
+      border-radius: 8px;
+      border: 1px solid transparent;
       white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .stepper-item.active {
-      color: var(--green-950);
-      background: var(--lime-100);
-      border-color: #bef264;
+    .step-dot::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--crema-dk);
+      flex: 0 0 auto;
     }
 
-    .stepper-item.done {
-      color: #ffffff;
-      background: var(--green-700);
-      border-color: var(--green-700);
+    .step-dot.active {
+      color: var(--tierra);
+      background: var(--pulpa-lt);
+      border-color: var(--pulpa);
+      font-weight: 700;
     }
 
-    .main-card {
-      margin-top: 14px;
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid rgba(226, 232, 240, 0.95);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow);
-      padding: 18px;
-      overflow: hidden;
+    .step-dot.active::before {
+      background: var(--palta-md);
     }
 
+    .step-dot.done {
+      color: var(--palta);
+    }
+
+    .step-dot.done::before {
+      background: var(--palta-lt);
+    }
+
+    /* ── Card principal ── */
+    .card {
+      margin-top: 12px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--r-card);
+      padding: 22px 18px;
+      box-shadow: var(--shadow-card);
+    }
+
+    /* ── Screen title ── */
     .screen-title {
-      font-size: clamp(1.55rem, 7vw, 2.2rem);
-      line-height: 1.04;
-      font-weight: 950;
-      letter-spacing: -0.06em;
-      margin: 0 0 14px;
-      color: var(--green-950);
+      font-family: var(--ff-display);
+      font-size: clamp(24px, 7vw, 32px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      color: var(--tierra);
+      margin: 0 0 6px;
     }
 
-    .screen-subtitle {
-      margin: -8px 0 15px;
+    .screen-sub {
+      font-size: 13.5px;
       color: var(--muted);
-      font-size: 0.94rem;
-      line-height: 1.35;
+      line-height: 1.4;
+      margin: 0 0 20px;
     }
 
-    .field-label,
-    .radio-title {
+    /* ── Labels / inputs ── */
+    .field-label {
       display: block;
-      color: #1f2937;
-      font-size: 0.92rem;
-      font-weight: 950;
-      margin: 14px 0 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--tierra);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      margin: 16px 0 6px;
     }
 
     input[type="text"],
@@ -239,698 +257,646 @@ INDEX_TEMPLATE = r"""
     input[type="number"],
     select {
       width: 100%;
-      min-height: 54px;
-      border-radius: 18px;
-      border: 1px solid #d1d5db;
-      background: #ffffff;
-      color: var(--text);
-      padding: 13px 14px;
+      min-height: 48px;
+      border-radius: var(--r-input);
+      border: 1.5px solid var(--crema-dk);
+      background: var(--crema);
+      color: var(--ink);
+      padding: 11px 13px;
       outline: none;
-      font-size: 1.02rem;
-      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
+      font-size: 15px;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
 
     input:focus,
     select:focus {
-      border-color: var(--green-700);
-      box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.16);
+      border-color: var(--palta-md);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(78,114,39,0.14);
     }
 
-    .radio-horizontal,
-    .radio-vertical {
+    /* ── Opciones radio ── */
+    .radio-group {
       display: grid;
-      gap: 10px;
-      margin: 8px 0 14px;
+      gap: 8px;
+      margin: 8px 0 4px;
     }
 
-    .radio-horizontal {
-      grid-template-columns: 1fr 1fr;
-    }
+    .radio-grid-2 { grid-template-columns: 1fr 1fr; }
 
-    .choice-card {
+    .opt-card {
       position: relative;
       display: flex;
       align-items: center;
       gap: 10px;
-      min-height: 58px;
+      min-height: 52px;
+      padding: 12px 13px;
+      border: 1.5px solid var(--crema-dk);
+      border-radius: var(--r-input);
+      background: var(--crema);
       cursor: pointer;
-      border: 1px solid #dbe3ea;
-      border-radius: 20px;
-      padding: 13px 14px;
-      background: linear-gradient(180deg, #ffffff, #fbfdff);
-      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
-      font-weight: 950;
-      color: #111827;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
     }
 
-    .choice-card input {
+    .opt-card input[type="radio"] {
       position: absolute;
       opacity: 0;
       pointer-events: none;
+      min-height: unset;
     }
 
-    .choice-dot {
-      width: 21px;
-      height: 21px;
-      border-radius: 999px;
-      border: 2px solid #cbd5e1;
-      display: inline-grid;
+    .opt-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--crema-dk);
+      background: var(--white);
+      display: grid;
       place-items: center;
       flex: 0 0 auto;
-      background: #ffffff;
+      transition: border-color 0.15s;
     }
 
-    .choice-dot::after {
-      content: "";
-      width: 9px;
-      height: 9px;
-      border-radius: 999px;
+    .opt-dot::after {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
       background: transparent;
+      transition: background 0.15s;
     }
 
-    .choice-card:has(input:checked) {
-      border-color: #22c55e;
-      background: linear-gradient(180deg, #f0fdf4, #ffffff);
-      box-shadow: 0 10px 25px rgba(22, 163, 74, 0.12);
+    .opt-card:has(input:checked) {
+      border-color: var(--palta-md);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(78,114,39,0.10);
     }
 
-    .choice-card:has(input:checked) .choice-dot {
-      border-color: var(--green-700);
-      background: var(--green-700);
+    .opt-card:has(input:checked) .opt-dot {
+      border-color: var(--palta-md);
     }
 
-    .choice-card:has(input:checked) .choice-dot::after {
-      background: #ffffff;
+    .opt-card:has(input:checked) .opt-dot::after {
+      background: var(--palta-md);
     }
 
-    .choice-title {
+    .opt-text { flex: 1; min-width: 0; }
+
+    .opt-title {
       display: block;
-      font-size: 1rem;
-      line-height: 1.15;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.2;
     }
 
-    .choice-hint {
+    .opt-hint {
       display: block;
-      color: #64748b;
-      font-size: 0.78rem;
-      font-weight: 750;
-      margin-top: 2px;
-      line-height: 1.15;
-    }
-
-    .total-card {
-      background:
-        radial-gradient(circle at top left, rgba(187, 247, 208, 0.95), transparent 13rem),
-        linear-gradient(135deg, #ecfdf5, #fefce8);
-      border: 1px solid #86efac;
-      border-radius: 26px;
-      padding: 18px 16px;
-      text-align: center;
-      margin: 16px 0 4px;
-      box-shadow: 0 14px 32px rgba(22, 101, 52, 0.12);
-    }
-
-    .total-label {
-      color: var(--green-800);
-      font-size: 0.9rem;
-      font-weight: 950;
-    }
-
-    .total-value {
-      color: var(--green-950);
-      font-size: clamp(2.25rem, 13vw, 3.6rem);
-      font-weight: 1000;
-      letter-spacing: -0.07em;
-      line-height: 1;
-      margin-top: 4px;
-    }
-
-    .soft-note {
+      font-size: 11.5px;
       color: var(--muted);
-      font-size: 0.88rem;
-      line-height: 1.32;
-      margin-top: 8px;
-      font-weight: 650;
+      margin-top: 1px;
+      line-height: 1.3;
     }
 
-    .info-card,
-    .summary-card,
-    .clean-card {
-      background: #ffffff;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      padding: 15px;
-      margin: 14px 0;
-      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+    .price-badge {
+      font-family: var(--ff-display);
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--palta);
+      white-space: nowrap;
     }
 
-    .summary-card {
-      background: linear-gradient(180deg, #f0fdf4, #ffffff);
-      border-color: #bbf7d0;
-    }
-
-    .mini-title {
+    /* ── Total box ── */
+    .total-box {
+      margin: 20px 0 4px;
+      padding: 18px 16px;
+      background: var(--tierra);
+      border-radius: var(--r-card);
       display: flex;
       align-items: center;
-      gap: 8px;
-      color: var(--green-800);
-      font-size: 0.92rem;
-      font-weight: 1000;
-      margin-bottom: 8px;
+      gap: 14px;
     }
 
-    .mini-title::before {
-      content: "";
-      width: 9px;
-      height: 9px;
-      border-radius: 999px;
-      background: var(--green-600);
-      box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.12);
+    .total-icon {
+      font-size: 28px;
+      line-height: 1;
+      flex: 0 0 auto;
     }
 
-    .summary-row {
+    .total-label-small {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 2px;
+    }
+
+    .total-number {
+      font-family: var(--ff-display);
+      font-size: clamp(26px, 10vw, 38px);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--pulpa-lt);
+      line-height: 1;
+    }
+
+    .total-sub {
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 3px;
+    }
+
+    /* ── Infobox / summary ── */
+    .infobox {
+      background: var(--crema);
+      border: 1px solid var(--line);
+      border-radius: var(--r-input);
+      padding: 13px 14px;
+      margin: 12px 0;
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .sumbox {
+      background: var(--crema);
+      border: 1px solid var(--crema-dk);
+      border-radius: var(--r-card);
+      margin: 16px 0;
+      overflow: hidden;
+    }
+
+    .sumbox-head {
+      background: var(--tierra);
+      color: rgba(255,255,255,0.85);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 14px;
+    }
+
+    .sumrow {
       display: flex;
       justify-content: space-between;
-      gap: 14px;
-      border-bottom: 1px solid #eef2f7;
-      padding: 11px 0;
-      font-size: 0.96rem;
+      gap: 12px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+      font-size: 13.5px;
     }
 
-    .summary-row:last-child {
-      border-bottom: 0;
-    }
+    .sumrow:last-child { border-bottom: 0; }
 
-    .summary-key {
+    .sum-key {
       color: var(--muted);
-      font-weight: 800;
+      font-weight: 500;
+      flex: 0 0 auto;
     }
 
-    .summary-value {
-      color: var(--text);
+    .sum-val {
+      color: var(--ink);
+      font-weight: 600;
       text-align: right;
-      font-weight: 950;
       word-break: break-word;
     }
 
-    .button-row {
+    /* ── Botones ── */
+    .btn-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 18px;
+      gap: 10px;
+      margin-top: 20px;
     }
 
-    .button-row.single {
-      grid-template-columns: 1fr;
-    }
+    .btn-row.single { grid-template-columns: 1fr; }
 
-    button,
-    .button {
+    .btn {
       width: 100%;
-      min-height: 56px;
-      border-radius: 18px;
-      border: 1px solid #d1d5db;
-      background: #ffffff;
-      color: var(--text);
-      font-weight: 1000;
-      font-size: 1rem;
+      min-height: 50px;
+      border-radius: var(--r-btn);
+      border: 1.5px solid var(--crema-dk);
+      background: var(--crema);
+      color: var(--tierra);
+      font-family: var(--ff-body);
+      font-weight: 600;
+      font-size: 14.5px;
       cursor: pointer;
       text-decoration: none;
       display: grid;
       place-items: center;
-      padding: 12px 14px;
+      padding: 11px 16px;
       text-align: center;
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+      transition: background 0.12s, border-color 0.12s, transform 0.08s;
     }
 
-    button.primary,
-    .button.primary {
-      background: linear-gradient(135deg, var(--green-700), var(--green-900));
-      color: #ffffff;
-      border-color: var(--green-800);
-      box-shadow: 0 14px 30px rgba(21, 128, 61, 0.24);
+    .btn:active { transform: scale(0.975); }
+
+    .btn.primary {
+      background: var(--palta);
+      border-color: var(--palta);
+      color: #fff;
+      box-shadow: var(--shadow-btn);
+      font-weight: 700;
     }
 
-    button:active,
-    .button:active,
-    .choice-card:active {
-      transform: scale(0.985);
+    .btn.primary:hover {
+      background: var(--palta-md);
+      border-color: var(--palta-md);
     }
 
-    .whatsapp-btn {
-      display: block;
+    /* ── WhatsApp ── */
+    .wa-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
       width: 100%;
-      text-align: center;
-      background: linear-gradient(135deg, #16a34a, #15803d);
-      color: white !important;
-      padding: 15px 16px;
-      border-radius: 18px;
-      font-weight: 1000;
+      min-height: 52px;
+      border-radius: var(--r-btn);
+      background: #25d366;
+      color: #fff !important;
+      font-weight: 700;
+      font-size: 15px;
       text-decoration: none !important;
-      margin: 14px 0;
-      box-shadow: 0 14px 30px rgba(22, 163, 74, 0.24);
+      margin: 12px 0;
+      box-shadow: 0 6px 20px rgba(37,211,102,0.28);
     }
 
+    /* ── Alertas ── */
     .notice {
-      border-radius: 18px;
-      padding: 13px 14px;
-      margin: 14px 0;
-      font-weight: 900;
-      line-height: 1.35;
+      border-radius: var(--r-input);
+      padding: 11px 13px;
+      margin: 10px 0;
+      font-size: 13.5px;
+      font-weight: 500;
+      line-height: 1.4;
     }
 
-    .success {
-      background: #dcfce7;
-      color: #14532d;
-      border: 1px solid #86efac;
-    }
+    .notice.ok      { background: #e9f5e1; color: #2a5216; border: 1px solid #a8d580; }
+    .notice.warn    { background: #fff3e0; color: #7a3d0a; border: 1px solid #f7c47a; }
+    .notice.err     { background: #fdeaea; color: #8b1a1a; border: 1px solid #f3a8a8; }
 
-    .warning {
-      background: #fff7ed;
-      color: #9a3412;
-      border: 1px solid #fed7aa;
-    }
-
-    .error {
-      background: #fef2f2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .checkbox-row {
+    /* ── Checkbox ── */
+    .check-row {
       display: flex;
       gap: 10px;
       align-items: flex-start;
-      margin: 15px 0 4px;
-      font-weight: 900;
-      line-height: 1.3;
-      padding: 14px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: #ffffff;
+      margin: 16px 0 4px;
+      font-size: 13.5px;
+      font-weight: 500;
+      line-height: 1.35;
+      color: var(--ink);
+      padding: 12px 13px;
+      border: 1.5px solid var(--crema-dk);
+      border-radius: var(--r-input);
+      background: var(--crema);
     }
 
-    .checkbox-row input {
-      width: 20px;
-      height: 20px;
-      accent-color: var(--green-700);
+    .check-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      min-height: unset;
+      accent-color: var(--palta);
       margin-top: 1px;
       flex: 0 0 auto;
     }
 
-    .footer-version {
+    .hidden { display: none !important; }
+
+    .footer {
       text-align: center;
-      color: #94a3b8;
-      font-size: 0.72rem;
-      margin-top: 18px;
-      font-weight: 700;
+      color: var(--crema-dk);
+      font-size: 11px;
+      margin-top: 20px;
+      letter-spacing: 0.04em;
     }
 
-    @media (max-width: 420px) {
-      .app-shell {
-        padding-left: 10px;
-        padding-right: 10px;
-      }
-
-      .brand-card,
-      .main-card {
-        border-radius: 24px;
-      }
-
-      .brand-row {
-        gap: 10px;
-      }
-
-      .logo-box {
-        width: 64px;
-        height: 64px;
-        border-radius: 21px;
-      }
-
-      .logo-box img {
-        width: 60px;
-        height: 60px;
-      }
-
-      .button-row {
-        grid-template-columns: 1fr;
-      }
-
-      .radio-horizontal {
-        grid-template-columns: 1fr 1fr;
-        gap: 9px;
-      }
-
-      .choice-card {
-        min-height: 56px;
-        padding: 12px;
-      }
-
-      .stepper-item {
-        font-size: 0.62rem;
-        padding: 7px 2px;
-      }
-
-      .summary-row {
-        align-items: flex-start;
-      }
+    /* ── Responsive ── */
+    @media (max-width: 400px) {
+      .shell { padding-left: 11px; padding-right: 11px; }
+      .card { padding: 18px 14px; }
+      .btn-row { grid-template-columns: 1fr; }
+      .radio-grid-2 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
-
 <body>
-  <main class="app-shell">
-    <header class="hero">
-      <div class="brand-card">
-        <div class="brand-row">
-          <div class="logo-box">
-            <img src="{{ url_for('static', filename='LOGO-PALTA.png') }}" alt="Logo paltas" onerror="this.style.display='none'">
+<div class="shell">
+
+  <header class="topbar">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <img src="{{ url_for('static', filename='LOGO-PALTA.png') }}" alt="Paltas" onerror="this.style.display='none'">
+      </div>
+      <div class="header-text">
+        <div class="eyebrow">Pedido online</div>
+        <h1 class="app-title">Paltas del campo</h1>
+      </div>
+    </div>
+
+    {% set nombres = {1: "Pedido", 2: "Entrega", 3: "Contacto", 4: "Confirmación"} %}
+    <div class="progress-section" style="margin-top:10px;">
+      <div class="progress-track">
+        <div class="progress-fill" style="width: {{ paso * 25 }}%;"></div>
+      </div>
+      <div class="stepper">
+        {% for n in [1, 2, 3, 4] %}
+          <div class="step-dot {% if n == paso %}active{% elif n < paso %}done{% endif %}">
+            {{ nombres[n] }}
           </div>
-          <div class="brand-text">
-            <div class="eyebrow">Pedido online</div>
-            <h1 class="main-title">Solicitud Pedido<br>Paltas</h1>
-            {% set nombres = {1: "Pedido", 2: "Entrega", 3: "Contacto", 4: "Confirmación"} %}
-            <div class="step-pill">Paso {{ paso }} de 4 · {{ nombres[paso] }}</div>
+        {% endfor %}
+      </div>
+    </div>
+  </header>
+
+  <div class="card">
+    {% for error in errores %}
+      <div class="notice err">{{ error }}</div>
+    {% endfor %}
+
+    {# ── RESULTADO ── #}
+    {% if resultado %}
+      {% if resultado.google_ok %}
+        <div class="notice ok">✓ Pedido registrado y guardado.</div>
+      {% else %}
+        <div class="notice warn">
+          Pedido guardado localmente. Google Sheets requiere revisión.<br>
+          <small>{{ resultado.google_msg }}</small>
+        </div>
+      {% endif %}
+
+      <div class="sumbox">
+        <div class="sumbox-head">Registro</div>
+        <div class="sumrow"><span class="sum-key">Folio</span><span class="sum-val">{{ resultado.folio }}</span></div>
+        <div class="sumrow"><span class="sum-key">Total</span><span class="sum-val">{{ resultado.total }}</span></div>
+      </div>
+
+      <a class="wa-btn" href="{{ resultado.whatsapp_url }}" target="_blank">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.135.558 4.14 1.535 5.878L.057 23.882a.5.5 0 0 0 .614.612l6.088-1.455A11.934 11.934 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.002-1.37l-.358-.213-3.715.888.918-3.636-.233-.375A9.818 9.818 0 1 1 12 21.818z"/></svg>
+        Enviar por WhatsApp
+      </a>
+
+      <form method="post" action="{{ url_for('nuevo') }}">
+        <button class="btn primary" type="submit">Nuevo pedido</button>
+      </form>
+
+    {# ── PASO 1 ── #}
+    {% elif paso == 1 %}
+      <h2 class="screen-title">¿Qué paltas quieres?</h2>
+      <p class="screen-sub">Elige el tipo y la cantidad. El total se actualiza solo.</p>
+
+      <form method="post" action="{{ url_for('paso_1') }}">
+        <span class="field-label">Variedad</span>
+        <div class="radio-group radio-grid-2">
+          {% for tipo, precio in precios.items() %}
+            <label class="opt-card">
+              <input type="radio" name="tipo_palta" value="{{ tipo }}" data-precio="{{ precio }}" {% if datos.tipo_palta == tipo %}checked{% endif %}>
+              <span class="opt-dot"></span>
+              <span class="opt-text">
+                <span class="opt-title">{{ tipo }}</span>
+                <span class="opt-hint">{{ formato_pesos(precio) }} / kg</span>
+              </span>
+            </label>
+          {% endfor %}
+        </div>
+
+        <label class="field-label" for="kilos">Kilos</label>
+        <input id="kilos" name="kilos" type="number" inputmode="decimal" min="1" step="0.5" value="{{ datos.kilos }}">
+
+        <div class="total-box">
+          <div class="total-icon">🥑</div>
+          <div>
+            <div class="total-label-small" id="precioKgLabel">{{ datos.tipo_palta }} · {{ formato_pesos(datos.precio_kg) }} / kg</div>
+            <div class="total-number" id="totalVisual">{{ formato_pesos(datos.total_paltas) }}</div>
+            <div class="total-sub">total por {{ datos.kilos }} kg</div>
           </div>
         </div>
 
-        <div class="progress-wrap">
-          <div class="progress-track">
-            <div class="progress-fill" style="width: {{ paso * 25 }}%;"></div>
-          </div>
-          <div class="stepper">
-            {% for n in [1, 2, 3, 4] %}
-              <div class="stepper-item {% if n == paso %}active{% elif n < paso %}done{% endif %}">
-                {{ n }}. {{ nombres[n] }}
-              </div>
+        <div class="btn-row single">
+          <button class="btn primary" type="submit">Continuar →</button>
+        </div>
+      </form>
+
+    {# ── PASO 2 ── #}
+    {% elif paso == 2 %}
+      <h2 class="screen-title">¿Cómo lo recibés?</h2>
+      <p class="screen-sub">Elige la modalidad de entrega.</p>
+
+      <form method="post" action="{{ url_for('paso_2') }}">
+        <div class="radio-group">
+          {% for opcion in ["Retiro sin costo", "Despacho zona cercana", "Cotizar otra comuna o región"] %}
+            <label class="opt-card">
+              <input type="radio" name="modalidad_entrega" value="{{ opcion }}" {% if datos.modalidad_entrega == opcion %}checked{% endif %}>
+              <span class="opt-dot"></span>
+              <span class="opt-text">
+                <span class="opt-title">{{ opcion }}</span>
+                {% if opcion == "Retiro sin costo" %}
+                  <span class="opt-hint">Sin costo — coordinas por WhatsApp</span>
+                {% elif opcion == "Despacho zona cercana" %}
+                  <span class="opt-hint">La Calera, Quillota, La Cruz, Hijuelas</span>
+                {% else %}
+                  <span class="opt-hint">Consultamos disponibilidad contigo</span>
+                {% endif %}
+              </span>
+            </label>
+          {% endfor %}
+        </div>
+
+        <div id="bloqueRetiro">
+          <label class="field-label" for="comuna_retiro">Localidad de retiro</label>
+          <select id="comuna_retiro" name="comuna_retiro">
+            {% for c in localidades %}
+              <option value="{{ c }}" {% if datos.comuna == c %}selected{% endif %}>{{ c }}</option>
             {% endfor %}
-          </div>
+          </select>
+          <div class="infobox">El punto exacto se confirma por WhatsApp al registrar el pedido.</div>
+        </div>
+
+        <div id="bloqueLocal" class="hidden">
+          <label class="field-label" for="comuna_local">Comuna</label>
+          <select id="comuna_local" name="comuna_local">
+            {% for c in localidades %}
+              <option value="{{ c }}" {% if datos.comuna == c %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div id="bloqueOtra" class="hidden">
+          <label class="field-label" for="region">Región</label>
+          <select id="region" name="region">
+            {% for r in regiones_comunas.keys() %}
+              <option value="{{ r }}" {% if datos.region == r %}selected{% endif %}>{{ r }}</option>
+            {% endfor %}
+          </select>
+          <label class="field-label" for="comuna_otra">Comuna</label>
+          <select id="comuna_otra" name="comuna_otra"></select>
+        </div>
+
+        <div id="bloqueDireccion" class="hidden">
+          <div class="infobox">Ingresa la dirección para coordinar el despacho.</div>
+          <label class="field-label" for="poblacion">Población / sector</label>
+          <input id="poblacion" name="poblacion" value="{{ datos.poblacion }}" placeholder="Ej: Boco, Pocochay, Artificio">
+          <label class="field-label" for="calle">Calle</label>
+          <input id="calle" name="calle" value="{{ datos.calle }}" placeholder="Ej: Los Aromos">
+          <label class="field-label" for="numero">Número</label>
+          <input id="numero" name="numero" value="{{ datos.numero }}" placeholder="Ej: 123">
+        </div>
+
+        <div class="btn-row">
+          <button class="btn" type="submit" formaction="{{ url_for('volver', paso=1) }}">← Volver</button>
+          <button class="btn primary" type="submit">Continuar →</button>
+        </div>
+      </form>
+
+    {# ── PASO 3 ── #}
+    {% elif paso == 3 %}
+      <h2 class="screen-title">Tus datos</h2>
+      <p class="screen-sub">Para confirmar el pedido y coordinar la entrega.</p>
+
+      <form method="post" action="{{ url_for('paso_3') }}">
+        <label class="field-label" for="nombre">Nombre</label>
+        <input id="nombre" name="nombre" value="{{ datos.nombre }}" placeholder="Tu nombre completo" autocomplete="name">
+
+        <label class="field-label" for="whatsapp">WhatsApp</label>
+        <input id="whatsapp" name="whatsapp" value="{{ datos.whatsapp }}" placeholder="+56 9 1234 5678" inputmode="tel" autocomplete="tel">
+
+        <div class="sumbox" style="margin-top:20px;">
+          <div class="sumbox-head">Resumen del pedido</div>
+          <div class="sumrow"><span class="sum-key">Palta</span><span class="sum-val">{{ datos.kilos }} kg · {{ datos.tipo_palta }}</span></div>
+          <div class="sumrow"><span class="sum-key">Total</span><span class="sum-val">{{ formato_pesos(datos.total_paltas) }}</span></div>
+          <div class="sumrow"><span class="sum-key">Entrega</span><span class="sum-val">{{ datos.modalidad_entrega }}</span></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn" type="submit" formaction="{{ url_for('volver', paso=2) }}">← Volver</button>
+          <button class="btn primary" type="submit">Ver resumen →</button>
+        </div>
+      </form>
+
+    {# ── PASO 4 ── #}
+    {% elif paso == 4 %}
+      <h2 class="screen-title">Revisa y confirma</h2>
+      <p class="screen-sub">Verifica que todo esté bien antes de registrar.</p>
+
+      {% if datos.modalidad_entrega == "Retiro sin costo" %}
+        {% set direccion = "Retiro en " ~ datos.comuna %}
+      {% else %}
+        {% set direccion = [datos.poblacion, datos.calle, datos.numero] | select | join(", ") %}
+      {% endif %}
+
+      <div class="total-box" style="margin-bottom:16px;">
+        <div class="total-icon">🥑</div>
+        <div>
+          <div class="total-label-small">Total paltas</div>
+          <div class="total-number">{{ formato_pesos(datos.total_paltas) }}</div>
+          <div class="total-sub">{{ datos.kilos }} kg · {{ datos.tipo_palta }}</div>
         </div>
       </div>
-    </header>
 
-    <section class="main-card">
-      {% for error in errores %}
-        <div class="notice error">{{ error }}</div>
-      {% endfor %}
+      <div class="sumbox">
+        <div class="sumbox-head">Pedido y entrega</div>
+        <div class="sumrow"><span class="sum-key">Precio / kg</span><span class="sum-val">{{ formato_pesos(datos.precio_kg) }}</span></div>
+        <div class="sumrow"><span class="sum-key">Entrega</span><span class="sum-val">{{ datos.modalidad_entrega }}</span></div>
+        <div class="sumrow"><span class="sum-key">Comuna</span><span class="sum-val">{{ datos.comuna }}</span></div>
+        <div class="sumrow"><span class="sum-key">Dirección</span><span class="sum-val">{{ direccion or "Por coordinar" }}</span></div>
+        <div class="sumrow"><span class="sum-key">Nombre</span><span class="sum-val">{{ datos.nombre }}</span></div>
+        <div class="sumrow"><span class="sum-key">WhatsApp</span><span class="sum-val">{{ datos.whatsapp }}</span></div>
+      </div>
 
-      {% if resultado %}
-        <div class="notice success">Pedido registrado.</div>
+      <div class="sumbox">
+        <div class="sumbox-head">Datos para transferencia</div>
+        <div class="sumrow"><span class="sum-key">Titular</span><span class="sum-val">{{ titular }}</span></div>
+        <div class="sumrow"><span class="sum-key">RUT</span><span class="sum-val">{{ rut }}</span></div>
+        <div class="sumrow"><span class="sum-key">Banco</span><span class="sum-val">{{ banco }}</span></div>
+        <div class="sumrow"><span class="sum-key">Cuenta</span><span class="sum-val">{{ tipo_cuenta }}</span></div>
+        <div class="sumrow"><span class="sum-key">Monto</span><span class="sum-val">{{ formato_pesos(datos.total_paltas) }}</span></div>
+      </div>
 
-        {% if resultado.google_ok %}
-          <div class="notice success">Guardado en Google Sheets.</div>
-        {% else %}
-          <div class="notice warning">
-            El pedido quedó como respaldo local. Google Sheets requiere revisión.<br>
-            <small>{{ resultado.google_msg }}</small>
-          </div>
-        {% endif %}
-
-        <div class="clean-card">
-          <div class="mini-title">Registro</div>
-          <div class="summary-row"><span class="summary-key">Folio</span><span class="summary-value">{{ resultado.folio }}</span></div>
-          <div class="summary-row"><span class="summary-key">Total</span><span class="summary-value">{{ resultado.total }}</span></div>
+      <form method="post" action="{{ url_for('registrar') }}">
+        <label class="check-row">
+          <input type="checkbox" name="confirmar" value="si">
+          <span>Confirmo que los datos son correctos.</span>
+        </label>
+        <div class="btn-row">
+          <button class="btn" type="submit" formaction="{{ url_for('volver', paso=3) }}">← Volver</button>
+          <button class="btn primary" type="submit">Registrar pedido</button>
         </div>
+      </form>
+    {% endif %}
+  </div>
 
-        <a class="whatsapp-btn" href="{{ resultado.whatsapp_url }}" target="_blank">Enviar pedido por WhatsApp</a>
+  <div class="footer">{{ app_version or "01_APP_SOLPED_PALTAS · V7" }}</div>
+</div>
 
-        <form method="post" action="{{ url_for('nuevo') }}">
-          <button class="primary" type="submit">Nuevo pedido</button>
-        </form>
+<script>
+  const regionesComunas = {{ regiones_comunas | tojson }};
 
-      {% elif paso == 1 %}
-        <form method="post" action="{{ url_for('paso_1') }}">
-          <h2 class="screen-title">¿Cuántos kilos quieres?</h2>
-          <p class="screen-subtitle">Selecciona el tipo de palta y la cantidad. El total se actualiza al instante.</p>
+  const fmt = v => "$" + Math.round(Number(v || 0)).toLocaleString("es-CL");
 
-          <div class="radio-title">Tipo de palta</div>
-          <div class="radio-horizontal">
-            {% for tipo, precio in precios.items() %}
-              <label class="choice-card">
-                <input type="radio" name="tipo_palta" value="{{ tipo }}" data-precio="{{ precio }}" {% if datos.tipo_palta == tipo %}checked{% endif %}>
-                <span class="choice-dot"></span>
-                <span>
-                  <span class="choice-title">{{ tipo }}</span>
-                  <span class="choice-hint">{{ formato_pesos(precio) }} / kg</span>
-                </span>
-              </label>
-            {% endfor %}
-          </div>
+  const kilosInput   = document.querySelector("#kilos");
+  const totalNum     = document.querySelector("#totalVisual");
+  const totalSub     = totalNum?.closest(".total-box")?.querySelector(".total-sub");
+  const precioLabel  = document.querySelector("#precioKgLabel");
+  const tipoRadios   = document.querySelectorAll("input[name='tipo_palta']");
 
-          <label class="field-label" for="kilos">Kilos</label>
-          <input id="kilos" name="kilos" type="number" inputmode="decimal" min="1" step="0.5" value="{{ datos.kilos }}">
+  function actualizarTotal() {
+    if (!kilosInput || !totalNum) return;
+    const sel    = document.querySelector("input[name='tipo_palta']:checked");
+    const tipo   = sel?.value || "Hass";
+    const precio = Number(sel?.dataset.precio || 0);
+    const kilos  = Number(kilosInput.value || 0);
+    totalNum.textContent = fmt(precio * kilos);
+    if (precioLabel) precioLabel.textContent = `${tipo} · ${fmt(precio)} / kg`;
+    if (totalSub)    totalSub.textContent    = `total por ${kilos} kg`;
+  }
 
-          <div class="total-card">
-            <div class="total-label" id="precioKgLabel">{{ datos.tipo_palta }} · {{ formato_pesos(datos.precio_kg) }} por kg</div>
-            <div class="total-value" id="totalVisual">{{ formato_pesos(datos.total_paltas) }}</div>
-            <div class="soft-note">Este es el valor total de las paltas por la cantidad seleccionada.</div>
-          </div>
+  tipoRadios.forEach(r => r.addEventListener("change", actualizarTotal));
+  kilosInput?.addEventListener("input", actualizarTotal);
+  actualizarTotal();
 
-          <div class="button-row single">
-            <button class="primary" type="submit">Continuar</button>
-          </div>
-        </form>
+  // Modalidad entrega
+  const bloqueRetiro    = document.querySelector("#bloqueRetiro");
+  const bloqueLocal     = document.querySelector("#bloqueLocal");
+  const bloqueOtra      = document.querySelector("#bloqueOtra");
+  const bloqueDireccion = document.querySelector("#bloqueDireccion");
+  const regionSelect    = document.querySelector("#region");
+  const comunaOtra      = document.querySelector("#comuna_otra");
 
-      {% elif paso == 2 %}
-        <form method="post" action="{{ url_for('paso_2') }}">
-          <h2 class="screen-title">Entrega</h2>
-          <p class="screen-subtitle">Elige cómo quieres recibir el pedido. Solo se mostrarán los datos necesarios.</p>
+  function modalidad() {
+    return document.querySelector("input[name='modalidad_entrega']:checked")?.value || "Retiro sin costo";
+  }
 
-          <div class="radio-title">Selecciona una opción</div>
-          <div class="radio-vertical">
-            {% for opcion in ["Retiro sin costo", "Despacho zona cercana", "Cotizar otra comuna o región"] %}
-              <label class="choice-card">
-                <input type="radio" name="modalidad_entrega" value="{{ opcion }}" {% if datos.modalidad_entrega == opcion %}checked{% endif %}>
-                <span class="choice-dot"></span>
-                <span>
-                  <span class="choice-title">{{ opcion }}</span>
-                  {% if opcion == "Retiro sin costo" %}
-                    <span class="choice-hint">Punto a coordinar por WhatsApp</span>
-                  {% elif opcion == "Despacho zona cercana" %}
-                    <span class="choice-hint">La Calera, Quillota, La Cruz o Hijuelas</span>
-                  {% else %}
-                    <span class="choice-hint">Revisamos disponibilidad de envío</span>
-                  {% endif %}
-                </span>
-              </label>
-            {% endfor %}
-          </div>
+  function actualizarModalidad() {
+    const m = modalidad();
+    bloqueRetiro?.classList.toggle("hidden", m !== "Retiro sin costo");
+    bloqueLocal?.classList.toggle("hidden",  m !== "Despacho zona cercana");
+    bloqueOtra?.classList.toggle("hidden",   m !== "Cotizar otra comuna o región");
+    bloqueDireccion?.classList.toggle("hidden", m === "Retiro sin costo");
+  }
 
-          <div id="bloqueRetiro">
-            <label class="field-label" for="comuna_retiro">Localidad de retiro</label>
-            <select id="comuna_retiro" name="comuna_retiro">
-              {% for comuna in localidades %}
-                <option value="{{ comuna }}" {% if datos.comuna == comuna %}selected{% endif %}>{{ comuna }}</option>
-              {% endfor %}
-            </select>
-
-            <div class="info-card">
-              <div class="mini-title">Retiro</div>
-              Sin costo de despacho. El punto exacto se confirma por WhatsApp.
-            </div>
-          </div>
-
-          <div id="bloqueLocal" class="hidden">
-            <label class="field-label" for="comuna_local">Comuna</label>
-            <select id="comuna_local" name="comuna_local">
-              {% for comuna in localidades %}
-                <option value="{{ comuna }}" {% if datos.comuna == comuna %}selected{% endif %}>{{ comuna }}</option>
-              {% endfor %}
-            </select>
-          </div>
-
-          <div id="bloqueOtra" class="hidden">
-            <label class="field-label" for="region">Región</label>
-            <select id="region" name="region">
-              {% for region in regiones_comunas.keys() %}
-                <option value="{{ region }}" {% if datos.region == region %}selected{% endif %}>{{ region }}</option>
-              {% endfor %}
-            </select>
-
-            <label class="field-label" for="comuna_otra">Comuna</label>
-            <select id="comuna_otra" name="comuna_otra"></select>
-          </div>
-
-          <div id="bloqueDireccion" class="hidden">
-            <div class="info-card">
-              <div class="mini-title">Dirección de entrega</div>
-              Completa los datos principales para coordinar rápido.
-            </div>
-
-            <label class="field-label" for="poblacion">Población / sector</label>
-            <input id="poblacion" name="poblacion" value="{{ datos.poblacion }}" placeholder="Ej: Artificio, Boco, Pocochay">
-
-            <label class="field-label" for="calle">Calle</label>
-            <input id="calle" name="calle" value="{{ datos.calle }}" placeholder="Ej: Los Aromos">
-
-            <label class="field-label" for="numero">Número</label>
-            <input id="numero" name="numero" value="{{ datos.numero }}" placeholder="Ej: 123">
-          </div>
-
-          <div class="button-row">
-            <button type="submit" formaction="{{ url_for('volver', paso=1) }}">Volver</button>
-            <button class="primary" type="submit">Continuar</button>
-          </div>
-        </form>
-
-      {% elif paso == 3 %}
-        <form method="post" action="{{ url_for('paso_3') }}">
-          <h2 class="screen-title">Datos de contacto</h2>
-          <p class="screen-subtitle">Usaremos estos datos para confirmar el pedido y coordinar la entrega.</p>
-
-          <label class="field-label" for="nombre">Nombre</label>
-          <input id="nombre" name="nombre" value="{{ datos.nombre }}" placeholder="Tu nombre" autocomplete="name">
-
-          <label class="field-label" for="whatsapp">WhatsApp</label>
-          <input id="whatsapp" name="whatsapp" value="{{ datos.whatsapp }}" placeholder="+56 9 1234 5678" inputmode="tel" autocomplete="tel">
-
-          <div class="summary-card">
-            <div class="mini-title">Resumen rápido</div>
-            <div class="summary-row"><span class="summary-key">Pedido</span><span class="summary-value">{{ datos.kilos }} kg · {{ datos.tipo_palta }}</span></div>
-            <div class="summary-row"><span class="summary-key">Total</span><span class="summary-value">{{ formato_pesos(datos.total_paltas) }}</span></div>
-            <div class="summary-row"><span class="summary-key">Entrega</span><span class="summary-value">{{ datos.modalidad_entrega }}</span></div>
-          </div>
-
-          <div class="button-row">
-            <button type="submit" formaction="{{ url_for('volver', paso=2) }}">Volver</button>
-            <button class="primary" type="submit">Ver transferencia</button>
-          </div>
-        </form>
-
-      {% elif paso == 4 %}
-        <h2 class="screen-title">Revisa tu pedido</h2>
-        <p class="screen-subtitle">Confirma que todo esté correcto antes de registrar.</p>
-
-        <div class="total-card">
-          <div class="total-label">Total paltas</div>
-          <div class="total-value">{{ formato_pesos(datos.total_paltas) }}</div>
-          <div class="soft-note">El despacho, si corresponde, se coordina aparte.</div>
-        </div>
-
-        {% if datos.modalidad_entrega == "Retiro sin costo" %}
-          {% set direccion = "Retiro en " ~ datos.comuna %}
-        {% else %}
-          {% set direccion = [datos.poblacion, datos.calle, datos.numero] | select | join(", ") %}
-        {% endif %}
-
-        <div class="clean-card">
-          <div class="mini-title">Resumen</div>
-          <div class="summary-row"><span class="summary-key">Pedido</span><span class="summary-value">{{ datos.kilos }} kg · {{ datos.tipo_palta }}</span></div>
-          <div class="summary-row"><span class="summary-key">Precio kg</span><span class="summary-value">{{ formato_pesos(datos.precio_kg) }}</span></div>
-          <div class="summary-row"><span class="summary-key">Entrega</span><span class="summary-value">{{ datos.modalidad_entrega }}</span></div>
-          <div class="summary-row"><span class="summary-key">Comuna</span><span class="summary-value">{{ datos.comuna }}</span></div>
-          <div class="summary-row"><span class="summary-key">Dirección</span><span class="summary-value">{{ direccion or "Por coordinar" }}</span></div>
-          <div class="summary-row"><span class="summary-key">Cliente</span><span class="summary-value">{{ datos.nombre }}</span></div>
-          <div class="summary-row"><span class="summary-key">WhatsApp</span><span class="summary-value">{{ datos.whatsapp }}</span></div>
-        </div>
-
-        <div class="clean-card">
-          <div class="mini-title">Transferencia</div>
-          <div class="summary-row"><span class="summary-key">Titular</span><span class="summary-value">{{ titular }}</span></div>
-          <div class="summary-row"><span class="summary-key">RUT</span><span class="summary-value">{{ rut }}</span></div>
-          <div class="summary-row"><span class="summary-key">Banco</span><span class="summary-value">{{ banco }}</span></div>
-          <div class="summary-row"><span class="summary-key">Cuenta</span><span class="summary-value">{{ tipo_cuenta }}</span></div>
-          <div class="summary-row"><span class="summary-key">Monto</span><span class="summary-value">{{ formato_pesos(datos.total_paltas) }}</span></div>
-        </div>
-
-        <form method="post" action="{{ url_for('registrar') }}">
-          <label class="checkbox-row">
-            <input type="checkbox" name="confirmar" value="si">
-            <span>Confirmo que los datos están correctos.</span>
-          </label>
-
-          <div class="button-row">
-            <button type="submit" formaction="{{ url_for('volver', paso=3) }}">Volver</button>
-            <button class="primary" type="submit">Registrar pedido</button>
-          </div>
-        </form>
-      {% endif %}
-    </section>
-
-    <div class="footer-version">{{ app_version or "01_APP_SOLPED_PALTAS · V6 Mobile Premium" }}</div>
-  </main>
-
-  <script>
-    const regionesComunas = {{ regiones_comunas | tojson }};
-    const pesos = (valor) => "$" + Math.round(Number(valor || 0)).toLocaleString("es-CL");
-
-    const kilosInput = document.querySelector("#kilos");
-    const totalVisual = document.querySelector("#totalVisual");
-    const precioKgLabel = document.querySelector("#precioKgLabel");
-    const tipoRadios = document.querySelectorAll("input[name='tipo_palta']");
-
-    function actualizarTotal() {
-      if (!kilosInput || !totalVisual) return;
-
-      const seleccionado = document.querySelector("input[name='tipo_palta']:checked");
-      const tipo = seleccionado?.value || "Hass";
-      const precio = Number(seleccionado?.dataset.precio || 0);
-      const kilos = Number(kilosInput.value || 0);
-      const total = precio * kilos;
-
-      totalVisual.textContent = pesos(total);
-      if (precioKgLabel) {
-        precioKgLabel.textContent = `${tipo} · ${pesos(precio)} por kg`;
-      }
-    }
-
-    tipoRadios.forEach(r => r.addEventListener("change", actualizarTotal));
-    kilosInput?.addEventListener("input", actualizarTotal);
-    actualizarTotal();
-
-    const bloqueRetiro = document.querySelector("#bloqueRetiro");
-    const bloqueLocal = document.querySelector("#bloqueLocal");
-    const bloqueOtra = document.querySelector("#bloqueOtra");
-    const bloqueDireccion = document.querySelector("#bloqueDireccion");
-    const regionSelect = document.querySelector("#region");
-    const comunaOtra = document.querySelector("#comuna_otra");
-
-    function modalidadActual() {
-      return document.querySelector("input[name='modalidad_entrega']:checked")?.value || "Retiro sin costo";
-    }
-
-    function actualizarModalidad() {
-      const modalidad = modalidadActual();
-
-      bloqueRetiro?.classList.toggle("hidden", modalidad !== "Retiro sin costo");
-      bloqueLocal?.classList.toggle("hidden", modalidad !== "Despacho zona cercana");
-      bloqueOtra?.classList.toggle("hidden", modalidad !== "Cotizar otra comuna o región");
-      bloqueDireccion?.classList.toggle("hidden", modalidad === "Retiro sin costo");
-    }
-
-    function cargarComunas() {
-      if (!regionSelect || !comunaOtra) return;
-
-      const region = regionSelect.value;
-      const comunas = regionesComunas[region] || [];
-      const comunaActual = "{{ datos.comuna }}";
-
-      comunaOtra.innerHTML = "";
-      comunas.forEach((comuna) => {
-        const option = document.createElement("option");
-        option.value = comuna;
-        option.textContent = comuna;
-        if (comuna === comunaActual) option.selected = true;
-        comunaOtra.appendChild(option);
-      });
-    }
-
-    document.querySelectorAll("input[name='modalidad_entrega']").forEach((radio) => {
-      radio.addEventListener("change", actualizarModalidad);
+  function cargarComunas() {
+    if (!regionSelect || !comunaOtra) return;
+    const comunas = regionesComunas[regionSelect.value] || [];
+    const actual  = "{{ datos.comuna }}";
+    comunaOtra.innerHTML = "";
+    comunas.forEach(c => {
+      const o = document.createElement("option");
+      o.value = o.textContent = c;
+      if (c === actual) o.selected = true;
+      comunaOtra.appendChild(o);
     });
+  }
 
-    regionSelect?.addEventListener("change", cargarComunas);
+  document.querySelectorAll("input[name='modalidad_entrega']")
+    .forEach(r => r.addEventListener("change", actualizarModalidad));
+  regionSelect?.addEventListener("change", cargarComunas);
 
-    cargarComunas();
-    actualizarModalidad();
-  </script>
+  cargarComunas();
+  actualizarModalidad();
+</script>
 </body>
 </html>
-
 """
 
 
@@ -980,7 +946,7 @@ REGIONES_COMUNAS = {
 
 
 # ============================================================
-# UTILIDADES
+# UTILIDADES  (idénticas a V6)
 # ============================================================
 
 def formato_pesos(valor) -> str:
@@ -1031,7 +997,6 @@ def obtener_worksheet_google_sheets():
     credentials = Credentials.from_service_account_info(obtener_service_account_info(), scopes=scopes)
     client = gspread.authorize(credentials)
     spreadsheet = client.open_by_url(GOOGLE_SHEET_URL)
-
     try:
         worksheet = spreadsheet.worksheet(GOOGLE_SHEET_NAME)
     except gspread.WorksheetNotFound:
@@ -1040,18 +1005,15 @@ def obtener_worksheet_google_sheets():
             rows=1000,
             cols=len(encabezados_google_sheets()),
         )
-
     return worksheet
 
 
 def asegurar_encabezados_google_sheets(worksheet) -> None:
     encabezados = encabezados_google_sheets()
     valores = worksheet.get_all_values()
-
     if not valores:
         worksheet.append_row(encabezados, value_input_option="USER_ENTERED")
         return
-
     primera_fila = [str(v).strip() for v in valores[0]]
     if primera_fila[: len(encabezados)] != encabezados:
         worksheet.insert_row(encabezados, index=1, value_input_option="USER_ENTERED")
@@ -1060,7 +1022,6 @@ def asegurar_encabezados_google_sheets(worksheet) -> None:
 def guardar_respaldo_csv(datos: dict) -> None:
     existe = ARCHIVO_RESPALDO.exists()
     columnas = columnas_internas()
-
     with ARCHIVO_RESPALDO.open("a", newline="", encoding="utf-8") as archivo:
         writer = csv.DictWriter(archivo, fieldnames=columnas)
         if not existe:
@@ -1147,18 +1108,18 @@ Quiero coordinar la entrega."""
 def datos_actuales() -> dict:
     pedido = session.get("pedido", {})
     return {
-        "tipo_palta": pedido.get("tipo_palta", "Hass"),
-        "kilos": pedido.get("kilos", KILOS_MINIMOS),
-        "precio_kg": pedido.get("precio_kg", PRECIOS_PALTA["Hass"]),
-        "total_paltas": pedido.get("total_paltas", PRECIOS_PALTA["Hass"]),
+        "tipo_palta":        pedido.get("tipo_palta", "Hass"),
+        "kilos":             pedido.get("kilos", KILOS_MINIMOS),
+        "precio_kg":         pedido.get("precio_kg", PRECIOS_PALTA["Hass"]),
+        "total_paltas":      pedido.get("total_paltas", PRECIOS_PALTA["Hass"]),
         "modalidad_entrega": pedido.get("modalidad_entrega", "Retiro sin costo"),
-        "region": pedido.get("region", "Valparaíso"),
-        "comuna": pedido.get("comuna", "La Calera"),
-        "poblacion": pedido.get("poblacion", ""),
-        "calle": pedido.get("calle", ""),
-        "numero": pedido.get("numero", ""),
-        "nombre": pedido.get("nombre", ""),
-        "whatsapp": pedido.get("whatsapp", ""),
+        "region":            pedido.get("region", "Valparaíso"),
+        "comuna":            pedido.get("comuna", "La Calera"),
+        "poblacion":         pedido.get("poblacion", ""),
+        "calle":             pedido.get("calle", ""),
+        "numero":            pedido.get("numero", ""),
+        "nombre":            pedido.get("nombre", ""),
+        "whatsapp":          pedido.get("whatsapp", ""),
     }
 
 
@@ -1171,39 +1132,36 @@ def actualizar_pedido(**kwargs) -> None:
 def validar_paso_2(modalidad: str, poblacion: str, calle: str, numero: str) -> list[str]:
     errores = []
     if modalidad != "Retiro sin costo":
-        if not poblacion.strip():
-            errores.append("Población / sector")
-        if not calle.strip():
-            errores.append("Calle")
-        if not numero.strip():
-            errores.append("Número")
+        if not poblacion.strip(): errores.append("Población / sector")
+        if not calle.strip():     errores.append("Calle")
+        if not numero.strip():    errores.append("Número")
     return errores
 
 
 def construir_datos_finales() -> dict:
     pedido = datos_actuales()
-    folio = "PALTA-" + datetime.now().strftime("%Y%m%d-%H%M%S")
+    folio  = "PALTA-" + datetime.now().strftime("%Y%m%d-%H%M%S")
     return {
-        "folio": folio,
-        "fecha_registro": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "tipo_palta": pedido["tipo_palta"],
-        "kilos": pedido["kilos"],
-        "precio_por_kg": int(pedido["precio_kg"]),
-        "total_paltas": int(pedido["total_paltas"]),
+        "folio":             folio,
+        "fecha_registro":    datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "tipo_palta":        pedido["tipo_palta"],
+        "kilos":             pedido["kilos"],
+        "precio_por_kg":     int(pedido["precio_kg"]),
+        "total_paltas":      int(pedido["total_paltas"]),
         "modalidad_entrega": pedido["modalidad_entrega"],
-        "region": pedido["region"],
-        "comuna": pedido["comuna"],
-        "poblacion": pedido["poblacion"],
-        "calle": pedido["calle"],
-        "numero": pedido["numero"],
-        "nombre": pedido["nombre"],
-        "whatsapp": normalizar_whatsapp(pedido["whatsapp"]),
-        "estado": "Solicitud recibida",
+        "region":            pedido["region"],
+        "comuna":            pedido["comuna"],
+        "poblacion":         pedido["poblacion"],
+        "calle":             pedido["calle"],
+        "numero":            pedido["numero"],
+        "nombre":            pedido["nombre"],
+        "whatsapp":          normalizar_whatsapp(pedido["whatsapp"]),
+        "estado":            "Solicitud recibida",
     }
 
 
 # ============================================================
-# RUTAS
+# RUTAS  (idénticas a V6)
 # ============================================================
 
 @app.route("/", methods=["GET"])
@@ -1211,7 +1169,6 @@ def index():
     paso = int(session.get("paso", 1))
     paso = max(1, min(4, paso))
     session["paso"] = paso
-
     return render_template_string(
         INDEX_TEMPLATE,
         paso=paso,
@@ -1224,7 +1181,7 @@ def index():
         rut=RUT,
         banco=BANCO,
         tipo_cuenta=TIPO_CUENTA,
-        app_version="01_APP_SOLPED_PALTAS · V6 Mobile Premium",
+        app_version="01_APP_SOLPED_PALTAS · V7",
         resultado=session.pop("resultado", None),
         errores=session.pop("errores", []),
     )
@@ -1233,16 +1190,10 @@ def index():
 @app.route("/paso/1", methods=["POST"])
 def paso_1():
     tipo_palta = request.form.get("tipo_palta", "Hass")
-    kilos = float(request.form.get("kilos", KILOS_MINIMOS))
-    precio_kg = PRECIOS_PALTA[tipo_palta]
-    total = calcular_total(tipo_palta, kilos)
-
-    actualizar_pedido(
-        tipo_palta=tipo_palta,
-        kilos=kilos,
-        precio_kg=precio_kg,
-        total_paltas=total,
-    )
+    kilos      = float(request.form.get("kilos", KILOS_MINIMOS))
+    precio_kg  = PRECIOS_PALTA[tipo_palta]
+    total      = calcular_total(tipo_palta, kilos)
+    actualizar_pedido(tipo_palta=tipo_palta, kilos=kilos, precio_kg=precio_kg, total_paltas=total)
     session["paso"] = 2
     return redirect(url_for("index"))
 
@@ -1250,11 +1201,11 @@ def paso_1():
 @app.route("/paso/2", methods=["POST"])
 def paso_2():
     modalidad = request.form.get("modalidad_entrega", "Retiro sin costo")
-    region = ""
-    comuna = ""
+    region    = ""
+    comuna    = ""
     poblacion = request.form.get("poblacion", "").strip()
-    calle = request.form.get("calle", "").strip()
-    numero = request.form.get("numero", "").strip()
+    calle     = request.form.get("calle", "").strip()
+    numero    = request.form.get("numero", "").strip()
 
     if modalidad == "Retiro sin costo":
         region = "Valparaíso"
@@ -1268,19 +1219,14 @@ def paso_2():
         comuna = request.form.get("comuna_otra", "La Calera")
 
     errores = validar_paso_2(modalidad, poblacion, calle, numero)
-
     if errores:
         session["errores"] = ["Falta completar: " + ", ".join(errores)]
-        session["paso"] = 2
+        session["paso"]    = 2
         return redirect(url_for("index"))
 
     actualizar_pedido(
-        modalidad_entrega=modalidad,
-        region=region,
-        comuna=comuna,
-        poblacion=poblacion,
-        calle=calle,
-        numero=numero,
+        modalidad_entrega=modalidad, region=region, comuna=comuna,
+        poblacion=poblacion, calle=calle, numero=numero,
     )
     session["paso"] = 3
     return redirect(url_for("index"))
@@ -1288,20 +1234,15 @@ def paso_2():
 
 @app.route("/paso/3", methods=["POST"])
 def paso_3():
-    nombre = request.form.get("nombre", "").strip()
+    nombre   = request.form.get("nombre", "").strip()
     whatsapp = request.form.get("whatsapp", "").strip()
-
-    errores = []
-    if not nombre:
-        errores.append("Nombre")
-    if not whatsapp:
-        errores.append("WhatsApp")
-
+    errores  = []
+    if not nombre:   errores.append("Nombre")
+    if not whatsapp: errores.append("WhatsApp")
     if errores:
         session["errores"] = ["Falta completar: " + ", ".join(errores)]
-        session["paso"] = 3
+        session["paso"]    = 3
         return redirect(url_for("index"))
-
     actualizar_pedido(nombre=nombre, whatsapp=whatsapp)
     session["paso"] = 4
     return redirect(url_for("index"))
@@ -1311,19 +1252,17 @@ def paso_3():
 def registrar():
     if request.form.get("confirmar") != "si":
         session["errores"] = ["Confirma que los datos están correctos."]
-        session["paso"] = 4
+        session["paso"]    = 4
         return redirect(url_for("index"))
-
-    datos = construir_datos_finales()
+    datos                 = construir_datos_finales()
     google_ok, google_msg = guardar_google_sheets(datos)
-
-    session["resultado"] = {
-        "google_ok": google_ok,
-        "google_msg": google_msg,
+    session["resultado"]  = {
+        "google_ok":   google_ok,
+        "google_msg":  google_msg,
         "whatsapp_url": link_whatsapp(datos),
-        "folio": datos["folio"],
-        "total": formato_pesos(datos["total_paltas"]),
-        "texto": crear_cuerpo_solicitud(datos),
+        "folio":       datos["folio"],
+        "total":       formato_pesos(datos["total_paltas"]),
+        "texto":       crear_cuerpo_solicitud(datos),
     }
     session["paso"] = 4
     return redirect(url_for("index"))
